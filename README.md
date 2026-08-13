@@ -20,6 +20,9 @@
 
 ## 🏗️ Architecture & Infrastructure Design
 
+![Lab Network Architecture Diagram](screenshots/architecture.png)
+*Figure 2.1: High-level network & component architecture for the self-hosted Wazuh SIEM lab.*
+
 ```mermaid
 flowchart TD
     subgraph Host["Host Operating System (macOS / Linux)"]
@@ -167,12 +170,46 @@ Test fixtures and true/false-positive control samples are documented in [`tests/
 
 ---
 
+## 📦 Repository Structure
+
+```text
+.
+├── README.md                          # Master documentation & lab guide
+├── LICENSE                            # MIT License
+├── docker/
+│   └── docker-compose.yml             # Production single-node Wazuh stack (Manager+Indexer+Dashboard)
+├── custom_rules/
+│   └── local_rules.xml                # Custom Wazuh ruleset (Rules 100100 - 100105)
+├── incident_reports/                  # Individual incident triage reports
+│   ├── IR-001_T1059.001_PowerShell_Obfuscation.md
+│   ├── IR-002_T1053.005_Scheduled_Task_Persistence.md
+│   ├── IR-003_T1547.001_Registry_Run_Keys.md
+│   ├── IR-004_T1070.001_Clear_Windows_Event_Logs.md
+│   └── IR-005_T1555.004_Credential_Store_Enumeration.md
+├── queries/
+│   └── threat_hunting.md              # DQL threat hunting cheat sheet
+├── configs/                           # Sysmon & Wazuh configuration files
+│   ├── sysmonconfig-export.xml        # Pinned Sysmon configuration XML
+│   ├── sysmon_config_note.md          # Sysmon event logging specifications
+│   ├── wazuh_agent_ossec_snippet.xml  # ossec.conf Sysmon eventchannel snippet
+│   └── atomic_red_team_guide.md       # Durable Atomic Red Team execution guide
+├── tests/
+│   ├── logtest_samples.json           # Rule testing event sample fixtures
+│   └── run_tests.py                   # Automated Python test runner script
+└── screenshots/                       # Visual assets & screenshot inventory
+    ├── architecture.png               # High-level architecture diagram
+    └── README.md
+```
+
+---
+
 ## 🏷️ Version History & Release Notes
 
 ### `v1.1.0` - Production-Grade Engineering Refinement
+- **Architecture Diagram**: Created custom high-resolution architecture diagram (`screenshots/architecture.png`) and Mermaid network flow diagram.
 - **Rule Tightening**: Enforced exact regex matching (`^1$`) on `win.system.eventID`.
 - **Test Suite**: Added python test runner (`tests/run_tests.py`) and true/false positive logtest sample fixtures (`tests/logtest_samples.json`).
-- **Telemetry Pinning**: Added pinned `sysmonconfig-export.xml` and durable `atomic_red_team_guide.md` with commit SHA pins.
+- **Telemetry Pinning**: Added pinned `sysmonconfig-export.xml` and durable `atomic_red_team_guide.md`.
 - **Agent Enrollment**: Documented network ports, client registration, and agent authentication steps.
 - **Licensing**: Added MIT License file.
 
