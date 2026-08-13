@@ -6,9 +6,9 @@ This document provides durable, reproducible execution specifications for all at
 
 ## 📌 Environment & Dependency Pins
 
-- **Invoke-AtomicRedTeam Module Version**: `v3.1.0` (Pinned Commit)
-- **Atomics Repository Commit**: `RedCanary/atomic-red-team@master`
-- **Atomics Installation Path**: `C:\AtomicRedTeam\atomics\atomics`
+- **Invoke-AtomicRedTeam Module**: `v3.1.0` Tagged Release
+- **Atomics Repository Commit Pin**: `RedCanary/atomic-red-team@e43d93b922a84a600a74adbfbbdbfcaeb0453d86` (Immutable SHA)
+- **Atomics Local Installation Path**: `C:\AtomicRedTeam\atomics\atomics`
 
 ---
 

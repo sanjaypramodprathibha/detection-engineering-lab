@@ -1,5 +1,5 @@
-# Production Single-Node Wazuh Deployment
-# Complete SIEM Stack: Wazuh Indexer + Wazuh Manager + Wazuh Dashboard
+# Single-Node Wazuh SIEM Deployment (v4.7.2)
+# Reference: https://github.com/wazuh/wazuh-docker/blob/v4.7.2/single-node/docker-compose.yml
 version: '3.8'
 
 services:
@@ -15,8 +15,8 @@ services:
       - "node.name=wazuh.indexer"
       - "cluster.name=wazuh-cluster"
       - "discovery.type=single-node"
-      - "DISABLE_INSTALL_DEMO_CONFIG=true"
-      - "DISABLE_SECURITY_PLUGIN=true"
+      - "DISABLE_INSTALL_DEMO_CONFIG=false"
+      - "DISABLE_SECURITY_PLUGIN=false"
     ulimits:
       memlock:
         soft: -1
@@ -38,7 +38,9 @@ services:
       - "1515:1515/tcp"
       - "55000:55000/tcp"
     environment:
-      - INDEXER_URL=http://wazuh.indexer:9200
+      - INDEXER_URL=https://wazuh.indexer:9200
+      - INDEXER_USERNAME=admin
+      - INDEXER_PASSWORD=admin
     depends_on:
       - wazuh.indexer
     volumes:
@@ -59,7 +61,7 @@ services:
     ports:
       - "443:5601"
     environment:
-      - WAZUH_INDEXER_URL=http://wazuh.indexer:9200
+      - WAZUH_INDEXER_URL=https://wazuh.indexer:9200
       - WAZUH_API_URL=https://wazuh.manager:55000
       - API_USERNAME=wazuh-wui
       - API_PASSWORD=wazuh-wui

@@ -25,7 +25,7 @@
   <!-- ====================================================================== -->
   <rule id="100105" level="15">
     <field name="win.system.providerName">Microsoft-Windows-Sysmon</field>
-    <field name="win.system.eventID">1</field>
+    <field name="win.system.eventID">^1$</field>
     <field name="win.eventdata.image" type="pcre2">(?i)\\powershell\.exe$</field>
     <field name="win.eventdata.commandLine" type="pcre2">(?i)(\s+-e\s+|\s+-encodedcommand\s+|\s+-enc\s+)</field>
     <description>Custom Detection: Base64 Encoded PowerShell Command Line Execution - Standalone Rule (T1059.001)</description>
@@ -42,7 +42,7 @@
   <!-- ====================================================================== -->
   <rule id="100101" level="12">
     <field name="win.system.providerName">Microsoft-Windows-Sysmon</field>
-    <field name="win.system.eventID">1</field>
+    <field name="win.system.eventID">^1$</field>
     <field name="win.eventdata.image" type="pcre2">(?i)\\schtasks\.exe$</field>
     <field name="win.eventdata.commandLine" type="pcre2">(?i)\/create</field>
     <description>Custom Detection: Scheduled Task Creation via schtasks.exe (T1053.005)</description>
@@ -74,7 +74,7 @@
   <!-- ====================================================================== -->
   <rule id="100103" level="13">
     <field name="win.system.providerName">Microsoft-Windows-Sysmon</field>
-    <field name="win.system.eventID">1</field>
+    <field name="win.system.eventID">^1$</field>
     <field name="win.eventdata.image" type="pcre2">(?i)\\wevtutil\.exe$</field>
     <field name="win.eventdata.commandLine" type="pcre2">(?i)(\s+cl\s+|\s+clear\s+)</field>
     <description>Custom Detection: Windows Event Log Cleared via wevtutil.exe (T1070.001)</description>
@@ -91,7 +91,7 @@
   <!-- ====================================================================== -->
   <rule id="100104" level="14">
     <field name="win.system.providerName">Microsoft-Windows-Sysmon</field>
-    <field name="win.system.eventID">1</field>
+    <field name="win.system.eventID">^1$</field>
     <field name="win.eventdata.image" type="pcre2">(?i)\\cmdkey\.exe$</field>
     <field name="win.eventdata.commandLine" type="pcre2">(?i)\/list</field>
     <description>Custom Detection: Saved Credentials Enumeration via cmdkey.exe (T1555.004)</description>

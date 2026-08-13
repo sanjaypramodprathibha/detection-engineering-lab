@@ -1,6 +1,7 @@
 [
   {
-    "name": "Test Rule 100105 - Base64 PowerShell Execution",
+    "name": "True Positive: Rule 100105 - Base64 Encoded PowerShell",
+    "is_positive": true,
     "event": {
       "win": {
         "system": {
@@ -16,7 +17,25 @@
     "expected_rule_id": "100105"
   },
   {
-    "name": "Test Rule 100101 - Scheduled Task Creation",
+    "name": "False Positive Control: Normal PowerShell Execution without Encoded Flag",
+    "is_positive": false,
+    "event": {
+      "win": {
+        "system": {
+          "providerName": "Microsoft-Windows-Sysmon",
+          "eventID": "1"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "commandLine": "powershell.exe Get-Process"
+        }
+      }
+    },
+    "expected_rule_id": null
+  },
+  {
+    "name": "True Positive: Rule 100101 - Scheduled Task Creation",
+    "is_positive": true,
     "event": {
       "win": {
         "system": {
@@ -32,7 +51,42 @@
     "expected_rule_id": "100101"
   },
   {
-    "name": "Test Rule 100103 - Clear Windows Event Logs",
+    "name": "False Positive Control: Scheduled Task Query (Benign Read)",
+    "is_positive": false,
+    "event": {
+      "win": {
+        "system": {
+          "providerName": "Microsoft-Windows-Sysmon",
+          "eventID": "1"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\schtasks.exe",
+          "commandLine": "schtasks.exe /query"
+        }
+      }
+    },
+    "expected_rule_id": null
+  },
+  {
+    "name": "True Positive: Rule 100102 - Registry Autostart Modification",
+    "is_positive": true,
+    "event": {
+      "win": {
+        "system": {
+          "providerName": "Microsoft-Windows-Sysmon",
+          "eventID": "13"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\reg.exe",
+          "targetObject": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\AtomicTest"
+        }
+      }
+    },
+    "expected_rule_id": "100102"
+  },
+  {
+    "name": "True Positive: Rule 100103 - Clear Event Logs",
+    "is_positive": true,
     "event": {
       "win": {
         "system": {
@@ -48,7 +102,25 @@
     "expected_rule_id": "100103"
   },
   {
-    "name": "Test Rule 100104 - Credential Store Enumeration",
+    "name": "False Positive Control: Wevtutil Query Event Logs (Benign Read)",
+    "is_positive": false,
+    "event": {
+      "win": {
+        "system": {
+          "providerName": "Microsoft-Windows-Sysmon",
+          "eventID": "1"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\wevtutil.exe",
+          "commandLine": "wevtutil qe System /c:5"
+        }
+      }
+    },
+    "expected_rule_id": null
+  },
+  {
+    "name": "True Positive: Rule 100104 - Credential Store Enumeration",
+    "is_positive": true,
     "event": {
       "win": {
         "system": {
