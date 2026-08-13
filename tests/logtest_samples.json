@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Test Rule 100105 - Base64 PowerShell Execution",
+    "event": {
+      "win": {
+        "system": {
+          "providerName": "Microsoft-Windows-Sysmon",
+          "eventID": "1"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "commandLine": "powershell.exe -e JgAgACAZw..."
+        }
+      }
+    },
+    "expected_rule_id": "100105"
+  },
+  {
+    "name": "Test Rule 100101 - Scheduled Task Creation",
+    "event": {
+      "win": {
+        "system": {
+          "providerName": "Microsoft-Windows-Sysmon",
+          "eventID": "1"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\schtasks.exe",
+          "commandLine": "schtasks.exe /create /tn spawn /tr cmd.exe /sc once /st 20:10"
+        }
+      }
+    },
+    "expected_rule_id": "100101"
+  },
+  {
+    "name": "Test Rule 100103 - Clear Windows Event Logs",
+    "event": {
+      "win": {
+        "system": {
+          "providerName": "Microsoft-Windows-Sysmon",
+          "eventID": "1"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\wevtutil.exe",
+          "commandLine": "wevtutil cl System"
+        }
+      }
+    },
+    "expected_rule_id": "100103"
+  },
+  {
+    "name": "Test Rule 100104 - Credential Store Enumeration",
+    "event": {
+      "win": {
+        "system": {
+          "providerName": "Microsoft-Windows-Sysmon",
+          "eventID": "1"
+        },
+        "eventdata": {
+          "image": "C:\\Windows\\System32\\cmdkey.exe",
+          "commandLine": "cmdkey.exe /list"
+        }
+      }
+    },
+    "expected_rule_id": "100104"
+  }
+]

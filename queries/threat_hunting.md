@@ -8,13 +8,14 @@ Use these DQL (Dashboard Query Language) and KQL (Kibana Query Language) queries
 
 Search for alerts triggered by custom rules written during this lab:
 
-| Technique | MITRE ID | Wazuh Rule ID | DQL Query |
-|---|---|---|---|
-| Base64 PowerShell | `T1059.001` | **100100** | `rule.id: 100100` |
-| Scheduled Task | `T1053.005` | **100101** | `rule.id: 100101` |
-| Registry Run Key | `T1547.001` | **100102** | `rule.id: 100102` |
-| Clear Event Logs | `T1070.001` | **100103** | `rule.id: 100103` |
-| Credential Enum | `T1555.004` | **100104** | `rule.id: 100104` |
+| Technique | MITRE ID | Rule Type | Wazuh Rule ID | DQL Query |
+|---|---|---|---|---|
+| Base64 PowerShell | `T1059.001` | Parent Correlation | **100100** | `rule.id: 100100` |
+| Base64 PowerShell | `T1059.001` | Standalone Sysmon | **100105** | `rule.id: 100105` |
+| Scheduled Task | `T1053.005` | Standalone Sysmon | **100101** | `rule.id: 100101` |
+| Registry Run Key | `T1547.001` | Parent Correlation | **100102** | `rule.id: 100102` |
+| Clear Event Logs | `T1070.001` | Standalone Sysmon | **100103** | `rule.id: 100103` |
+| Credential Enum | `T1555.004` | Standalone Sysmon | **100104** | `rule.id: 100104` |
 
 ---
 

@@ -1,19 +1,21 @@
-# Sysmon Integration Configuration
+# Sysmon Integration & Telemetry Baseline
 
-## Endpoint Setup
+## Endpoint Setup & Configuration
 
 - **Host Machine**: Windows 11 Pro (VirtualBox Target VM)
-- **Agent**: Wazuh Windows Agent (v4.x)
-- **Log Source**: Microsoft-Windows-Sysmon/Operational
+- **Agent**: Wazuh Windows Agent (v4.7.2)
+- **Log Channel**: `Microsoft-Windows-Sysmon/Operational`
+- **Pinned Sysmon Config**: [`configs/sysmonconfig-export.xml`](sysmonconfig-export.xml) (Schema v4.90)
 
-## Key Event Types Monitored
+## Monitored Event IDs & Telemetry Schema
 
-1. **Process Creation (Event ID 1)**: Captures process start events, binary hashes (MD5, SHA256), parent process GUIDs, and full execution command lines.
-2. **Network Connections (Event ID 3)**: Monitors inbound and outbound TCP/UDP connections.
-3. **Registry Events (Event IDs 12, 13, 14)**: Tracks registry key and value modifications (specifically autostart / run keys).
-4. **Scheduled Task Operations**: Monitored via command line process telemetry and Windows TaskScheduler operational logs.
+| Event ID | Event Name | Description & Filter Logic | Key Event Data Fields |
+|---|---|---|---|
+| **Event ID 1** | Process Creation | Captures binary execution, CLI arguments, parent-child process chains, and cryptographic hashes (`MD5`, `SHA256`, `IMPHASH`). | `image`, `commandLine`, `parentImage`, `parentCommandLine`, `user`, `hashes` |
+| **Event ID 3** | Network Connection | Monitors inbound and outbound TCP/UDP socket connections. | `image`, `destinationIp`, `destinationPort`, `user` |
+| **Event ID 12/13/14** | Registry Events | Tracks autostart registry modifications under `CurrentVersion\Run` and `RunOnce`. | `targetObject`, `eventType`, `image`, `details` |
 
-## Configuration Baseline
-
-- Sysmon was deployed using the industry-standard baseline configuration (SwiftOnSecurity ruleset).
-- Windows Event Log forwarding to Wazuh Manager was enabled via `<localfile>` eventchannel binding in `ossec.conf`.
+## Deployment Command
+```cmd
+sysmon64.exe -i sysmonconfig-export.xml -accepteula
+```

@@ -1,0 +1,37 @@
+<Sysmon schemaversion="4.90">
+  <!-- Pinned Detection Engineering Lab Baseline Configuration -->
+  <HashAlgorithms>MD5,SHA256,IMPHASH</HashAlgorithms>
+  <EventFiltering>
+    <!-- Event ID 1: Process Creation -->
+    <RuleGroup groupRelation="or">
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">powershell.exe</Image>
+        <Image condition="end with">schtasks.exe</Image>
+        <Image condition="end with">reg.exe</Image>
+        <Image condition="end with">wevtutil.exe</Image>
+        <Image condition="end with">cmdkey.exe</Image>
+        <Image condition="end with">cmd.exe</Image>
+        <CommandLine condition="contains">encodedcommand</CommandLine>
+        <CommandLine condition="contains">schtasks</CommandLine>
+        <CommandLine condition="contains">wevtutil</CommandLine>
+        <CommandLine condition="contains">cmdkey</CommandLine>
+      </ProcessCreate>
+    </RuleGroup>
+
+    <!-- Event ID 3: Network Connection -->
+    <RuleGroup groupRelation="or">
+      <NetworkConnect onmatch="include">
+        <Image condition="end with">powershell.exe</Image>
+        <Image condition="end with">cmd.exe</Image>
+      </NetworkConnect>
+    </RuleGroup>
+
+    <!-- Event ID 12/13/14: Registry Event -->
+    <RuleGroup groupRelation="or">
+      <RegistryEvent onmatch="include">
+        <TargetObject condition="contains">CurrentVersion\Run</TargetObject>
+        <TargetObject condition="contains">CurrentVersion\RunOnce</TargetObject>
+      </RegistryEvent>
+    </RuleGroup>
+  </EventFiltering>
+</Sysmon>

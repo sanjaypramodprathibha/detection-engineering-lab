@@ -1,68 +1,104 @@
 <!-- Custom Wazuh Local Ruleset - Detection Engineering & Threat Hunting Lab -->
+<!-- Reference: https://documentation.wazuh.com/current/user-manual/ruleset/ruleset-xml-syntax/rules.html -->
+
 <group name="custom,powershell,attack,schtasks,registry,evasion,credential_access,">
 
-  <!-- Rule 100100: T1059.001 Base64 Encoded PowerShell Execution (Parent Correlation Variant) -->
+  <!-- ====================================================================== -->
+  <!-- RULE 100100: T1059.001 - Parent Correlation / Severity Escalation     -->
+  <!-- Description: Parent correlation rule that inherits from Wazuh default  -->
+  <!-- rule 92057 (PowerShell execution), elevating severity to Level 15 and  -->
+  <!-- enriching the alert with MITRE ATT&CK taxonomy metadata.               -->
+  <!-- ====================================================================== -->
   <rule id="100100" level="15">
     <if_sid>92057</if_sid>
-    <description>Custom Detection: Base64 Encoded PowerShell Execution (Atomic Red Team - T1059.001)</description>
+    <description>Custom Detection: Base64 Encoded PowerShell Execution - Parent Correlation (T1059.001)</description>
     <mitre>
       <id>T1059.001</id>
     </mitre>
-    <group>attack,powershell,custom_detection,</group>
+    <group>attack,powershell,custom_detection,parent_correlation,</group>
   </rule>
 
-  <!-- Rule 100105: T1059.001 Base64 Encoded PowerShell Execution (Standalone Sysmon Field Variant) -->
+  <!-- ====================================================================== -->
+  <!-- RULE 100105: T1059.001 - Standalone Direct Sysmon Field Match          -->
+  <!-- Description: Standalone detection rule inspecting Sysmon Event ID 1     -->
+  <!-- process creation telemetry for powershell.exe with encoded flags.     -->
+  <!-- ====================================================================== -->
   <rule id="100105" level="15">
-    <if_group>windows</if_group>
-    <field name="win.eventdata.commandLine" type="pcre2">(?i)powershell.*(\s+-e\s+|\s+-encodedcommand\s+|\s+-enc\s+)</field>
-    <description>Custom Detection: Direct Encoded PowerShell Command Line Execution (Standalone Rule - T1059.001)</description>
+    <field name="win.system.providerName">Microsoft-Windows-Sysmon</field>
+    <field name="win.system.eventID">1</field>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\powershell\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(\s+-e\s+|\s+-encodedcommand\s+|\s+-enc\s+)</field>
+    <description>Custom Detection: Base64 Encoded PowerShell Command Line Execution - Standalone Rule (T1059.001)</description>
     <mitre>
       <id>T1059.001</id>
     </mitre>
     <group>attack,powershell,custom_detection,standalone,</group>
   </rule>
 
-  <!-- Rule 100101: T1053.005 Scheduled Task Creation -->
+  <!-- ====================================================================== -->
+  <!-- RULE 100101: T1053.005 - Scheduled Task Creation                       -->
+  <!-- Description: Standalone rule matching Sysmon Event ID 1 process       -->
+  <!-- creation for schtasks.exe with the /create parameter.                 -->
+  <!-- ====================================================================== -->
   <rule id="100101" level="12">
-    <if_sid>92032</if_sid>
-    <field name="win.eventdata.commandLine" type="pcre2">(?i)schtasks.*\/create</field>
-    <description>Custom Detection: Scheduled Task Creation via schtasks.exe (Atomic Red Team - T1053.005)</description>
+    <field name="win.system.providerName">Microsoft-Windows-Sysmon</field>
+    <field name="win.system.eventID">1</field>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\schtasks\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)\/create</field>
+    <description>Custom Detection: Scheduled Task Creation via schtasks.exe (T1053.005)</description>
     <mitre>
       <id>T1053.005</id>
     </mitre>
-    <group>attack,persistence,custom_detection,</group>
+    <group>attack,persistence,custom_detection,standalone,</group>
   </rule>
 
-  <!-- Rule 100102: T1547.001 Registry Run Key Persistence -->
+  <!-- ====================================================================== -->
+  <!-- RULE 100102: T1547.001 - Parent Correlation / Severity Escalation     -->
+  <!-- Description: Parent correlation rule inheriting from default rule 92302-->
+  <!-- (Registry entry autostart modification), elevating severity to Level 12-->
+  <!-- and tagging with MITRE T1547.001.                                      -->
+  <!-- ====================================================================== -->
   <rule id="100102" level="12">
     <if_sid>92302</if_sid>
-    <description>Custom Detection: Registry Run Key Persistence Modification (Atomic Red Team - T1547.001)</description>
+    <description>Custom Detection: Registry Run Key Persistence Modification - Parent Correlation (T1547.001)</description>
     <mitre>
       <id>T1547.001</id>
     </mitre>
-    <group>attack,persistence,custom_detection,</group>
+    <group>attack,persistence,custom_detection,parent_correlation,</group>
   </rule>
 
-  <!-- Rule 100103: T1070.001 Windows Event Log Cleared -->
+  <!-- ====================================================================== -->
+  <!-- RULE 100103: T1070.001 - Windows Event Log Cleared                     -->
+  <!-- Description: Standalone rule matching Sysmon Event ID 1 process       -->
+  <!-- creation for wevtutil.exe with log clearing switches (cl / clear).    -->
+  <!-- ====================================================================== -->
   <rule id="100103" level="13">
-    <if_group>windows</if_group>
-    <field name="win.eventdata.commandLine" type="pcre2">(?i)wevtutil.*(\s+cl\s+|\s+clear\s+)</field>
-    <description>Custom Detection: Windows Event Log Cleared via wevtutil (Atomic Red Team - T1070.001)</description>
+    <field name="win.system.providerName">Microsoft-Windows-Sysmon</field>
+    <field name="win.system.eventID">1</field>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\wevtutil\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(\s+cl\s+|\s+clear\s+)</field>
+    <description>Custom Detection: Windows Event Log Cleared via wevtutil.exe (T1070.001)</description>
     <mitre>
       <id>T1070.001</id>
     </mitre>
-    <group>attack,defense_evasion,custom_detection,</group>
+    <group>attack,defense_evasion,custom_detection,standalone,</group>
   </rule>
 
-  <!-- Rule 100104: T1555.004 Saved Credentials Enumeration -->
+  <!-- ====================================================================== -->
+  <!-- RULE 100104: T1555.004 - Windows Credential Store Enumeration          -->
+  <!-- Description: Standalone rule matching Sysmon Event ID 1 process       -->
+  <!-- creation for cmdkey.exe with the /list parameter.                     -->
+  <!-- ====================================================================== -->
   <rule id="100104" level="14">
-    <if_group>windows</if_group>
-    <field name="win.eventdata.commandLine" type="pcre2">(?i)cmdkey.*\/list</field>
-    <description>Custom Detection: Saved Credentials Enumeration via cmdkey.exe (Atomic Red Team - T1555.004)</description>
+    <field name="win.system.providerName">Microsoft-Windows-Sysmon</field>
+    <field name="win.system.eventID">1</field>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\cmdkey\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)\/list</field>
+    <description>Custom Detection: Saved Credentials Enumeration via cmdkey.exe (T1555.004)</description>
     <mitre>
       <id>T1555.004</id>
     </mitre>
-    <group>attack,credential_access,custom_detection,</group>
+    <group>attack,credential_access,custom_detection,standalone,</group>
   </rule>
 
 </group>

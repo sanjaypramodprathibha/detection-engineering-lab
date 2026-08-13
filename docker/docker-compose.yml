@@ -1,21 +1,46 @@
-# Wazuh Single-Node Docker Compose Deployment
-# Used for self-hosted Wazuh SIEM on host OS (macOS/Linux)
+# Production Single-Node Wazuh Deployment
+# Complete SIEM Stack: Wazuh Indexer + Wazuh Manager + Wazuh Dashboard
 version: '3.8'
 
 services:
+  wazuh.indexer:
+    image: wazuh/wazuh-indexer:4.7.2
+    container_name: wazuh.indexer
+    hostname: wazuh.indexer
+    restart: always
+    ports:
+      - "9200:9200"
+    environment:
+      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "node.name=wazuh.indexer"
+      - "cluster.name=wazuh-cluster"
+      - "discovery.type=single-node"
+      - "DISABLE_INSTALL_DEMO_CONFIG=true"
+      - "DISABLE_SECURITY_PLUGIN=true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - wazuh_indexer_data:/var/lib/wazuh-indexer
+
   wazuh.manager:
     image: wazuh/wazuh-manager:4.7.2
     container_name: wazuh.manager
     hostname: wazuh.manager
     restart: always
     ports:
-      - "1514:1514/udp"
       - "1514:1514/tcp"
+      - "1514:1514/udp"
       - "1515:1515/tcp"
-      - "514:514/udp"
       - "55000:55000/tcp"
     environment:
-      - ELASTIC_ACCOUNT_CREATION=true
+      - INDEXER_URL=http://wazuh.indexer:9200
+    depends_on:
+      - wazuh.indexer
     volumes:
       - wazuh_etc:/var/ossec/etc
       - wazuh_logs:/var/ossec/logs
@@ -34,13 +59,16 @@ services:
     ports:
       - "443:5601"
     environment:
-      - WAZUH_API_URL=https://wazuh.manager
+      - WAZUH_INDEXER_URL=http://wazuh.indexer:9200
+      - WAZUH_API_URL=https://wazuh.manager:55000
       - API_USERNAME=wazuh-wui
       - API_PASSWORD=wazuh-wui
     depends_on:
       - wazuh.manager
+      - wazuh.indexer
 
 volumes:
+  wazuh_indexer_data:
   wazuh_etc:
   wazuh_logs:
   wazuh_queue:

@@ -1,7 +1,16 @@
-<!-- Add this block to C:\Program Files (x86)\ossec-agent\ossec.conf on the Windows endpoint -->
-<ossec_config>
-  <localfile>
-    <location>Microsoft-Windows-Sysmon/Operational</location>
-    <log_format>eventchannel</log_format>
-  </localfile>
-</ossec_config>
+<!-- 
+  Sysmon EventChannel Binding Snippet for Wazuh Agent
+  Target File: C:\Program Files (x86)\ossec-agent\ossec.conf
+
+  INSTRUCTIONS:
+  1. Open C:\Program Files (x86)\ossec-agent\ossec.conf in Notepad (Run as Administrator).
+  2. Locate the main root tag <ossec_config>.
+  3. Paste the <localfile> block below directly inside the <ossec_config> element (e.g., after existing <localfile> entries).
+  4. Save the file and restart the agent via PowerShell (Admin):
+     Restart-Service -Name Wazuh
+-->
+
+<localfile>
+  <location>Microsoft-Windows-Sysmon/Operational</location>
+  <log_format>eventchannel</log_format>
+</localfile>
