@@ -1,0 +1,7 @@
+<!-- Add this block to C:\Program Files (x86)\ossec-agent\ossec.conf on the Windows endpoint -->
+<ossec_config>
+  <localfile>
+    <location>Microsoft-Windows-Sysmon/Operational</location>
+    <log_format>eventchannel</log_format>
+  </localfile>
+</ossec_config>
