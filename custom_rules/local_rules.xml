@@ -1,7 +1,7 @@
 <!-- Custom Wazuh Local Ruleset - Detection Engineering & Threat Hunting Lab -->
 <group name="custom,powershell,attack,schtasks,registry,evasion,credential_access,">
 
-  <!-- Rule 100100: T1059.001 Base64 Encoded PowerShell Execution -->
+  <!-- Rule 100100: T1059.001 Base64 Encoded PowerShell Execution (Parent Correlation Variant) -->
   <rule id="100100" level="15">
     <if_sid>92057</if_sid>
     <description>Custom Detection: Base64 Encoded PowerShell Execution (Atomic Red Team - T1059.001)</description>
@@ -9,6 +9,17 @@
       <id>T1059.001</id>
     </mitre>
     <group>attack,powershell,custom_detection,</group>
+  </rule>
+
+  <!-- Rule 100105: T1059.001 Base64 Encoded PowerShell Execution (Standalone Sysmon Field Variant) -->
+  <rule id="100105" level="15">
+    <if_group>windows</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)powershell.*(\s+-e\s+|\s+-encodedcommand\s+|\s+-enc\s+)</field>
+    <description>Custom Detection: Direct Encoded PowerShell Command Line Execution (Standalone Rule - T1059.001)</description>
+    <mitre>
+      <id>T1059.001</id>
+    </mitre>
+    <group>attack,powershell,custom_detection,standalone,</group>
   </rule>
 
   <!-- Rule 100101: T1053.005 Scheduled Task Creation -->
